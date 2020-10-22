@@ -4,13 +4,11 @@ const food_color = '#239B56';
 
 
 const socket = io('http://localhost:3000'); /// toma el url para conectar el front con el server
-
-
 socket.on('init', handleinit);
 socket.on('gameState', handleGameState);
 socket.on('gameOver', handleGameOver); // ahora llamamos a paintgame cada vez que el servidor nos envie una actualizacion  del game state
 socket.on('gameCode', handleGameCode);
-socket.on('unknowncode', handleUnknowngame);
+socket.on('unknowngame', handleUnknowngame);
 socket.on('tooManyJugadores', handleToomanyjugadores);
 
 const pantallaJuego = document.getElementById('pantallaJuego');
@@ -33,6 +31,7 @@ function Nuevojuego() {
 function Unirsejuego() {
     const codigo = CodigoJuego.value;
     socket.emit('Unirsejuego', codigo);
+
     init();
 }
 let canvas, ctx;
@@ -63,7 +62,7 @@ function init() {
 }
 
 function keydown(e) {
-
+    console.log(e.keyCode);
     socket.emit('keydown', e.keyCode);
 }
 
@@ -86,7 +85,7 @@ function paintGame(state) {
     ctx.fillRect(food.x * size, food.y * size, size, size);
 
     paintPlayer(state.players[0], size, snake_color);
-    paintPlayer(state.players[1], size, snake_color);
+    paintPlayer(state.players[1], size, 'red');
 }
 
 function paintPlayer(playerState, size, color) {
@@ -123,14 +122,12 @@ function handleGameOver(data) {
     }
     data = JSON.parse(data);
 
-    gameActive = false;
-
     if (data.winner === NumeroJugador) {
         alert('Ganaste!!!1')
     } else {
         alert('Perdiste!');
     }
-
+    gameActive = false;
 }
 
 function handleGameCode(gameCode) {
@@ -149,8 +146,8 @@ function handleToomanyjugadores() {
 
 function reset() {
     NumeroJugador = null;
-    CodigoJuego.value = "";
-    CodigoJuegoDisplay.innerText = "";
-    pantallaInicial.style.display = 'block';
+    gameCodeInput.value = "";
+    gameCodeDisplay.innerText = "";
+    initialScreen.style.display = 'block';
     pantallaJuego.style.display = 'none';
 }

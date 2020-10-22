@@ -9,9 +9,10 @@ io.on('connection', client => {
 
     client.on('keydown', handleKeydown);
     client.on('Nuevojuego', handleNuevojuego);
-    client.on('unirsejuego', handleUnirsejuego);
+    client.on('Unirsejuego', handleUnirsejuego);
 
     function handleUnirsejuego(nombreSala) {
+        console.log('conexion hecha')
         const sala = io.sockets.adapter.rooms[nombreSala];
 
         let todosusuarios;
@@ -24,12 +25,13 @@ io.on('connection', client => {
             Numeroclientes = Object.keys(todosusuarios).length;
         }
         if (Numeroclientes === 0) {
-            client.emit('unknowncode');
+            client.emit('Juegodesconocido');
             return;
         } else if (Numeroclientes > 1) {
-            client.emit('tooManyJugadores');
+            client.emit('MuchosJugadores');
             return;
         }
+        console.log('juego')
         salaCliente[client.id] = nombreSala;
 
         client.join(nombreSala);
@@ -47,7 +49,7 @@ io.on('connection', client => {
         client.emit('gameCode', nombreSala);
 
         state[nombreSala] = InicioJuego();
-
+        console.log('paso1')
         client.join(nombreSala);
         client.number = 1;
         client.emit('init', 1)
@@ -55,6 +57,7 @@ io.on('connection', client => {
 
     function handleKeydown(keyCode) {
         const nombreSala = salaCliente[client.id];
+        console.log('paso 3')
         if (!nombreSala) {
             return;
         }
@@ -100,6 +103,6 @@ function emitGameState(sala, gameState) {
 }
 
 function emitGameOver(sala, winner) {
-    io.sockets.in(sala).emit('gameOver', JSON, stringify({ winner }));
+    io.sockets.in(sala).emit('gameOver', JSON.stringify({ winner }));
 }
 io.listen(3000);

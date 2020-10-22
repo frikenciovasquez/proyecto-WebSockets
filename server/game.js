@@ -58,7 +58,6 @@ function gameloop(state) {
     /// se actualiza la poscion de acuero a la velocidad en cad ainteraccion del gameloop moveremos la coordenada de x 
     jugadorOne.pos.x += jugadorOne.vel.x;
     jugadorOne.pos.y += jugadorOne.vel.y;
-
     jugadorTwo.pos.x += jugadorTwo.vel.x;
     jugadorTwo.pos.y += jugadorTwo.vel.y;
 
